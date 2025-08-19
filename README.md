@@ -26,7 +26,7 @@ It streamlines record-keeping, automates academic report card generation, and ma
 ![Dashboard](screenshot/Dashboard.png)  
 ![Student Page](screenshot/Student.png)
 ![Add Student Page](screenshot/Add_Student.png)
-![Subject Page](screenshot/Subject.png)
+![Subject Page](screenshot/subject.png)
 ![Subject score Entry Page](screenshot/Subject_score_entry.png)
 ![Assessment Page](screenshot/Batch_assesment.png)
 ![Report Card](screenshot/pdf_generated_result.png)
