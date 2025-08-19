@@ -59,6 +59,15 @@ flutter pub get
 # Run the app
 flutter run
 
+---
+
+## 🧑‍💻 Developer
+
+**Abdulsalam Olarinoye Bashir**  
+[LinkedIn](https://www.linkedin.com/in/bashir-abdulsalam-gmnse-aa2b18246/) | [GitHub](https://github.com/BashLaw-Cyber)  
+*Software Engineer & Educator*
+
+---
 
 ## 🙌 Acknowledgments
 
