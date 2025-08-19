@@ -23,14 +23,14 @@ It streamlines record-keeping, automates academic report card generation, and ma
 
 ## 📸 Screenshots
 
-![Dashboard](screenshot\Dashboard.png)  
-![Student Page](screenshot\Student.png)
-![Add Student Page](screenshot\Add_Student.png)
-![Subject Page](screenshot\Subject.png)
-![Subject score Entry Page](screenshot\Subject_score_entry.png)
-![Assessment Page](screenshot\Batch_assesment.png)
-![Report Card](screenshot\pdf_generated_result.png)
-![Setting Page](screenshot\Setting.png)
+![Dashboard](screenshot/Dashboard.png)  
+![Student Page](screenshot/Student.png)
+![Add Student Page](screenshot/Add_Student.png)
+![Subject Page](screenshot/Subject.png)
+![Subject score Entry Page](screenshot/Subject_score_entry.png)
+![Assessment Page](screenshot/Batch_assesment.png)
+![Report Card](screenshot/pdf_generated_result.png)
+![Setting Page](screenshot/Setting.png)
 
 ---
 
@@ -38,13 +38,9 @@ It streamlines record-keeping, automates academic report card generation, and ma
 
 - **GIF Example:**
 
-![App Demo](screenshot\Gif1.gif)
-![App Demo](screenshot\Gif2.gif)
-![App Demo](screenshot\Gif3.gif)
-
-- **Video Example (YouTube / Drive link):**
-
-[▶️ Watch Demo Video](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+![App Demo](screenshot/Gif1.gif)
+![App Demo](screenshot/Gif2.gif)
+![App Demo](screenshot/Gif3.gif)
 
 ---
 
