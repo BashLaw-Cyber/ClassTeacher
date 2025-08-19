@@ -44,23 +44,6 @@ It streamlines record-keeping, automates academic report card generation, and ma
 
 ---
 
-## 🚀 Getting Started
-
-```bash
-# Clone the repo
-git clone https://github.com/BashLaw-Cyber/ClassTeacher.git
-
-# Navigate to project folder
-cd classreportsheet
-
-# Install dependencies
-flutter pub get
-
-# Run the app
-flutter run
-
----
-
 ## 🧑‍💻 Developer
 
 **Abdulsalam Olarinoye Bashir**  
@@ -75,3 +58,19 @@ flutter run
 - [Hive](https://docs.hivedb.dev/) and [Sqflite](https://pub.dev/packages/sqflite) package maintainers  
 - Inspiration from teachers and schools still relying on manual record-keeping  
 
+---
+
+## 🚀 Getting Started
+
+```bash
+# Clone the repo
+git clone https://github.com/BashLaw-Cyber/ClassTeacher.git
+
+# Navigate to project folder
+cd classreportsheet
+
+# Install dependencies
+flutter pub get
+
+# Run the app
+flutter run
