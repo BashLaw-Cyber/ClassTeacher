@@ -15,6 +15,7 @@ It streamlines record-keeping, automates academic report card generation, and ma
 ---
 
 ## 🛠️ Tech Stack
+
 - **Framework:** Flutter  
 - **Databases:** Hive & Sqflite  
 - **Language:** Dart  

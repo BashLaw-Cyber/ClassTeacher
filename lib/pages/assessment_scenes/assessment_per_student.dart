@@ -190,7 +190,7 @@ class _AssessmentPerStudentState extends State<AssessmentPerStudent> {
               provider.updateStudentRemarks(studentInfo);
               Navigator.pop(context);
             },
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.done),
           ),
         ],
       ),

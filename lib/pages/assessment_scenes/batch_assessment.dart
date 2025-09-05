@@ -129,7 +129,16 @@ class _BatchAssessmentState extends State<BatchAssessment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("$cls students assessments")),
+      appBar: AppBar(title: Text("$cls students assessments"), actions: [
+        if(index == studentsInClass.length-1)IconButton(
+          onPressed: () {
+            final currentStudent = studentsInClass[index]![0];
+            updateAllRecords(index, currentStudent);
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.check),
+        ),
+      ]),
       body: Column(
         children: [
           _buildStudentInfoSection(index),

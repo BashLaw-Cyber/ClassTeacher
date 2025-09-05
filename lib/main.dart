@@ -1,4 +1,6 @@
+import 'package:classreportsheet/pages/assessment_scenes/asssessments_page.dart';
 import 'package:classreportsheet/pages/home_page.dart';
+import 'package:classreportsheet/pages/result_scenes/results_page.dart';
 import 'package:classreportsheet/pages/search_page.dart';
 import 'package:classreportsheet/pages/setting_scenes/setting_page.dart';
 import 'package:classreportsheet/pages/student_scenes/student_page.dart';
@@ -23,7 +25,7 @@ void main() async {
   await Hive.openBox<List>(termsParameters);
   await Hive.openBox<List>(schoolProperties);
   await Hive.openBox<List>(schoolLogo);
-  
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => StudentProvider(),
@@ -74,6 +76,22 @@ class MyApp extends StatelessWidget {
             name: SubjectPage.route,
             path: SubjectPage.route,
             builder: (context, state) => SubjectPage(),
+          ),
+          GoRoute(
+            path: AssessmentsPage.route,
+            name: AssessmentsPage.route,
+            builder: (context, state) => AssessmentsPage(
+              mapOfClassRecord:
+                  state.extra as Map<String, Map<int, List<dynamic>>>,
+            ),
+          ),
+          GoRoute(
+            path: ResultsPage.route,
+            name: ResultsPage.route,
+            builder: (context, state) => ResultsPage(
+              mapOfClassCardReport:
+                  state.extra as Map<String, Map<int, List<dynamic>>>,
+            ),
           ),
           GoRoute(
             path: SettingPage.route,

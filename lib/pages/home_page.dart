@@ -1,3 +1,4 @@
+import 'package:classreportsheet/custom_widget/dashboard_model.dart';
 import 'package:classreportsheet/db/hive_db.dart';
 import 'package:classreportsheet/pages/assessment_scenes/asssessments_page.dart';
 import 'package:classreportsheet/pages/result_scenes/results_page.dart';
@@ -50,14 +51,13 @@ class _HomePageState extends State<HomePage> {
                   break;
               }
             },
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(value: "Class", child: Text("Class")),
-                  PopupMenuItem(value: "Student", child: Text("Student")),
-                  PopupMenuItem(value: "Results", child: Text("Result")),
-                  PopupMenuItem(value: "Setting", child: Text("Setting")),
-                  PopupMenuItem(value: "Logout", child: Text("Logout")),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(value: "Class", child: Text("Class")),
+              PopupMenuItem(value: "Student", child: Text("Student")),
+              PopupMenuItem(value: "Results", child: Text("Result")),
+              PopupMenuItem(value: "Setting", child: Text("Setting")),
+              PopupMenuItem(value: "Logout", child: Text("Logout")),
+            ],
           ),
         ],
       ),
@@ -85,223 +85,62 @@ class _HomePageState extends State<HomePage> {
                   mainAxisSpacing: 16.0,
                   childAspectRatio: 1,
                   children: [
-                    Container(
-                      //color: Colors.blue,
-                      decoration: BoxDecoration(
-                        color: gridColor,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                context.goNamed(StudentPage.route);
-                              },
-                              icon: Icon(
-                                Icons.school,
-                                size: 55,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text("Students", style: normalFontStyle),
-                            ),
-                          ],
-                        ),
-                      ),
+                    DashboardModel(
+                      title: "Students",
+                      icon: Icons.school,
+                      onTap: () {
+                        context.goNamed(StudentPage.route);
+                      },
                     ),
-                    Container(
-                      //color: Colors.blue,
-                      decoration: BoxDecoration(
-                        color: gridColor,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                context.goNamed(SubjectPage.route);
-                              },
-                              icon: Icon(
-                                Icons.menu_book,
-                                size: 55,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text("Subjects", style: normalFontStyle),
-                            ),
-                          ],
-                        ),
-                      ),
+                    DashboardModel(
+                      title: "Subjects",
+                      icon: Icons.menu_book,
+                      onTap: () {
+                        context.goNamed(SubjectPage.route);
+                      },
                     ),
-                    Container(
-                      //color: Colors.blue,
-                      decoration: BoxDecoration(
-                        color: gridColor,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () async {
-                                final classes = getAllClasses();
-                                final provider = Provider.of<StudentProvider>(
-                                  context,
-                                  listen: false,
-                                );
-                                EasyLoading.show(status: "Please wait...");
-                                final mapOfClassCardReport = await provider
-                                    .mapOfClassCardReport(classes);
-                                EasyLoading.dismiss();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => AssessmentsPage(
-                                          mapOfClassRecord:
-                                              mapOfClassCardReport,
-                                        ),
-                                  ),
-                                );
-                                //context.goNamed(AssessmentsPage.route);
-                              },
-                              icon: Icon(
-                                Icons.fact_check,
-                                size: 55,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                "Assessments",
-                                style: normalFontStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    DashboardModel(
+                      title: "Assessments",
+                      icon: Icons.assignment,
+                      onTap: () async {
+                        final classes = getAllClasses();
+                        final provider = Provider.of<StudentProvider>(
+                          context,
+                          listen: false,
+                        );
+                        EasyLoading.show(status: "Please wait...");
+                        final mapOfClassCardReport = await provider
+                            .mapOfClassCardReport(classes);
+                        EasyLoading.dismiss();
+                        context.goNamed(AssessmentsPage.route, extra: mapOfClassCardReport);
+                      },
                     ),
-                    Container(
-                      //color: Colors.blue,
-                      decoration: BoxDecoration(
-                        color: gridColor,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () async {
-                                final classes = getAllClasses();
-                                final provider = Provider.of<StudentProvider>(
-                                  context,
-                                  listen: false,
-                                );
-                                EasyLoading.show(status: "Please wait...");
-                                final mapOfClassCardReport = await provider
-                                    .mapOfClassCardReport(classes);
-                                EasyLoading.dismiss();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => ResultsPage(
-                                          mapOfClassCardReport:
-                                              mapOfClassCardReport,
-                                        ),
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.assessment,
-                                size: 55,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text("Results", style: normalFontStyle),
-                            ),
-                          ],
-                        ),
-                      ),
+                    DashboardModel(
+                      title: "Results",
+                      icon: Icons.assessment,
+                      onTap: () async {
+                        final classes = getAllClasses();
+                        final provider = Provider.of<StudentProvider>(
+                          context,
+                          listen: false,
+                        );
+                        EasyLoading.show(status: "Please wait...");
+                        final mapOfClassCardReport = await provider
+                            .mapOfClassCardReport(classes);
+                        EasyLoading.dismiss();
+                        context.goNamed(ResultsPage.route, extra: mapOfClassCardReport);
+                      },
                     ),
-                    Container(
-                      //color: Colors.blue,
-                      decoration: BoxDecoration(
-                        color: gridColor,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                context.goNamed(TermSessionPage.route);
-                              },
-                              icon: Icon(
-                                Icons.calendar_month,
-                                size: 55,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                "Term Session",
-                                style: normalFontStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    DashboardModel(
+                      title: "Term Session",
+                      icon: Icons.calendar_today,
+                      onTap: () {
+                        context.goNamed(TermSessionPage.route);
+                      },
                     ),
-                    Container(
-                      //color: Colors.blue,
-                      decoration: BoxDecoration(
-                        color: gridColor,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                context.goNamed(SettingPage.route);
-                              },
-                              icon: Icon(
-                                Icons.settings,
-                                size: 55,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text("Settings", style: normalFontStyle),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    DashboardModel(title: "Settings", icon: Icons.settings, onTap: () {
+                      context.goNamed(SettingPage.route);
+                    }),
                   ],
                 ),
               ),
