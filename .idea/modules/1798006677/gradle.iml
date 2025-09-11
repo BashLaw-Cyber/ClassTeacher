@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://C:/flutter/packages/flutter_tools/gradle" dumb="true">
+      <excludeFolder url="file://C:/flutter/packages/flutter_tools/gradle/.dart_tool" />
+      <excludeFolder url="file://C:/flutter/packages/flutter_tools/gradle/.pub" />
+    </content>
+  </component>
+</module>
