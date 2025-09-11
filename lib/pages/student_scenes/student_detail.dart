@@ -1,5 +1,4 @@
 import 'package:classreportsheet/model/student_model.dart';
-import 'package:classreportsheet/pages/student_scenes/student_page.dart';
 import 'package:classreportsheet/providers/student_provider.dart';
 import 'package:classreportsheet/util/constant.dart';
 import 'package:classreportsheet/util/helpful_functions.dart';

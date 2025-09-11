@@ -3,7 +3,6 @@ import 'dart:core';
 import 'package:classreportsheet/model/behaviour_model.dart';
 import 'package:classreportsheet/model/skill_model.dart';
 import 'package:classreportsheet/model/student_model.dart';
-import 'package:classreportsheet/pages/search_page.dart';
 import 'package:classreportsheet/pages/student_scenes/student_detail.dart';
 import 'package:classreportsheet/providers/student_provider.dart';
 import 'package:classreportsheet/util/constant.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../db/hive_db.dart';

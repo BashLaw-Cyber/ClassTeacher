@@ -2,7 +2,6 @@ import 'package:classreportsheet/model/behaviour_model.dart';
 import 'package:classreportsheet/model/skill_model.dart';
 import 'package:classreportsheet/model/student_model.dart';
 import 'package:classreportsheet/model/subject_model.dart';
-import 'package:classreportsheet/pages/student_scenes/student_detail.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/utils/utils.dart' as sqflite;

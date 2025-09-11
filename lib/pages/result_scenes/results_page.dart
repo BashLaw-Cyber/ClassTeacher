@@ -173,15 +173,19 @@ class _ResultsPageState extends State<ResultsPage> {
           );
   }
 
+  Future<pw.Font> _loadFont() async {
+    return pw.Font.ttf(
+      await rootBundle.load("assets/fonts/NotoSansSymbols2-Regular.ttf"),
+    );
+  }
+
   Future<File> getClassReportCards(
     Map<int, List<dynamic>> studentsInClass,
   ) async {
     final imageByte = await File(getSchoolLogoPath()).readAsBytes();
     final image = pw.MemoryImage(imageByte);
 
-    final font = pw.Font.ttf(
-      await rootBundle.load("assets/fonts/NotoSansSymbols2-Regular.ttf"),
-    );
+    final font = await _loadFont();
 
     final pdf = pw.Document();
     final length = studentsInClass.length;
@@ -262,7 +266,7 @@ class _ResultsPageState extends State<ResultsPage> {
                 pw.SizedBox(height: 10),
                 _buildStudentInfo(student, length),
                 pw.SizedBox(height: 10),
-                _buildSubjectsTable(studentRecords),
+                _buildSubjectsTable(studentRecords, font),
                 pw.SizedBox(height: 10),
                 _buildSkillsAndBehaviorSection(studentRecords, font),
                 pw.SizedBox(height: 10),
@@ -463,7 +467,7 @@ class _ResultsPageState extends State<ResultsPage> {
     );
   }
 
-  pw.Widget _buildSubjectsTable(List<dynamic> studentRecords) {
+  pw.Widget _buildSubjectsTable(List<dynamic> studentRecords, pw.Font font) {
     final List<SubjectModel> subjectsRecord = studentRecords[1];
     final StudentModel student = studentRecords[0];
 
@@ -539,6 +543,7 @@ class _ResultsPageState extends State<ResultsPage> {
               _buildTableCell(
                 subject.subjectName,
                 alignment: pw.Alignment.centerLeft,
+                font: font
               ),
               _buildTableCell("${subject.ca1 ?? 0.0}"),
               _buildTableCell("${subject.ca2 ?? 0.0}"),
