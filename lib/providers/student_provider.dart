@@ -1,5 +1,7 @@
+import 'dart:collection';
 
 import 'package:classreportsheet/db/db_helper.dart';
+import 'package:classreportsheet/db/hive_db.dart';
 import 'package:classreportsheet/model/skill_model.dart';
 import 'package:classreportsheet/model/student_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,27 +10,64 @@ import '../model/behaviour_model.dart';
 import '../model/subject_model.dart';
 
 class StudentProvider extends ChangeNotifier {
-  List<StudentModel> studentList = [];
+  String _orderBy = tblStudentName;
+  Map<String, List<StudentModel>> studentList = {};
   List<SubjectModel> subjectList = [];
   SubjectModel? subjectScore;
   List<int> numberOfStudent = [];
-  int? totalNoStudent;
+  int totalNoStudent = 0;
+  UnmodifiableListView<StudentModel> get allStudent =>
+      UnmodifiableListView(studentList.values.expand((e) => e));
 
   final db = DbHelper();
 
+  String get orderBy => _orderBy;
+
+  void setOrderBy(String order) {
+    if (order == _orderBy) return;
+    _orderBy = order;
+    // final cls = getAllClasses();
+    // for (var cl in cls) {
+    //   switch (_orderBy) {
+    //     case tblStudentName:
+    //       studentList[cl]!.toList().sort((a, b) => a.name.compareTo(b.name));
+    //       break;
+    //     case tblStudentId:
+    //       studentList[cl]!.toList().sort((a, b) => a.id!.compareTo(b.id!));
+    //       break;
+    //     case tblStudentAverageScore:
+    //       studentList[cl]!.toList().sort(
+    //         (a, b) => a.averageScore!.compareTo(b.averageScore!),
+    //       );
+    //       break;
+    //   }
+    // }
+    //notifyListeners();
+    getAllStudent();
+  }
+
   Future<void> insertStudent(StudentModel studentModel) async {
     await db.insertStudent(studentModel);
-    // getAllStudent();
-    // notifyListeners();
+    getAllStudent();
+    getTotalStudent();
   }
 
   Future<List<StudentModel>> getAllStudentInAClass(String cls) async {
-    return db.getAllStudentInAClass(cls);
+    return db.getAllStudentInAClass(cls, _orderBy);
+  }
+
+  // New approach
+  Future<void> getAllStudent() async {
+    final cls = getAllClasses();
+    studentList = await db.getAllStudent(cls, _orderBy);
+    notifyListeners();
   }
 
   Future<void> deleteStudent(int id) async {
     await db.deleteStudent(id);
     await db.deleteStudentSubjects(id);
+    getAllStudent();
+    getTotalStudent();
   }
 
   Future<void> insertSubject(List<String> subjects, int studentId) async {
@@ -62,7 +101,9 @@ class StudentProvider extends ChangeNotifier {
     return db.mapOfStudentSubjectRecords(subject, cls);
   }
 
-  Future<Map<String, Map<int,List<dynamic>>>> mapOfClassCardReport(List<String> cls)async {
+  Future<Map<String, Map<int, List<dynamic>>>> mapOfClassCardReport(
+    List<String> cls,
+  ) async {
     return db.mapOfClassCardReport(cls);
   }
 
@@ -94,8 +135,8 @@ class StudentProvider extends ChangeNotifier {
     return db.updateStudentRecords(id, studentInfo);
   }
 
-  Future<int> totalStudent()async {
-    return await db.totalNumberOfStudent();
+  Future<void> getTotalStudent() async {
+    totalNoStudent = await db.totalNumberOfStudent();
+    notifyListeners();
   }
-  get getTotal=> totalNoStudent;
 }

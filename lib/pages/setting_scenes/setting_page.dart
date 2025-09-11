@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:classreportsheet/providers/student_provider.dart';
 import 'package:classreportsheet/util/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../../db/hive_db.dart';
 
@@ -473,6 +475,11 @@ class _SettingPageState extends State<SettingPage> {
                             myClasses = getAllClasses();
                             myClasses.sort();
                           });
+
+                          Provider.of<StudentProvider>(
+                            context,
+                            listen: false,
+                          ).getAllStudent();
                         }
                       },
                       child: Text("Add"),

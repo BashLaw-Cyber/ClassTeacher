@@ -1,4 +1,5 @@
 import 'package:classreportsheet/model/student_model.dart';
+import 'package:classreportsheet/pages/student_scenes/student_page.dart';
 import 'package:classreportsheet/providers/student_provider.dart';
 import 'package:classreportsheet/util/constant.dart';
 import 'package:classreportsheet/util/helpful_functions.dart';
@@ -73,7 +74,7 @@ class _StudentDetailState extends State<StudentDetail> {
         actions: [
           IconButton(
             onPressed: _onSaveUpdate,
-            icon: Icon(Icons.save, size: 24),
+            icon: Icon(Icons.done, size: 24),
           ),
         ],
       ),
@@ -288,6 +289,7 @@ class _StudentDetailState extends State<StudentDetail> {
     if (newSubjects.isNotEmpty) {
       provider.insertSubject(newSubjects, widget.student.id!);
     }
+    provider.getAllStudent();
     Navigator.pop(context,"refresh");
   }
 }

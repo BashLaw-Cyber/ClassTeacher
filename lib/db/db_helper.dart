@@ -2,6 +2,7 @@ import 'package:classreportsheet/model/behaviour_model.dart';
 import 'package:classreportsheet/model/skill_model.dart';
 import 'package:classreportsheet/model/student_model.dart';
 import 'package:classreportsheet/model/subject_model.dart';
+import 'package:classreportsheet/pages/student_scenes/student_detail.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/utils/utils.dart' as sqflite;
@@ -159,13 +160,14 @@ class DbHelper {
     }
   }
 
-  Future<List<StudentModel>> getAllStudentInAClass(String cls) async {
+  Future<List<StudentModel>> getAllStudentInAClass(String cls, String order) async {
     final db = await _openStudentDb();
 
     final mapList = await db.query(
       tableStudent,
       where: "$tblStudentClass = ?",
       whereArgs: [cls],
+      orderBy: order,
     );
     return mapList.map((e) => StudentModel.formMap(e)).toList();
   }
@@ -215,7 +217,10 @@ class DbHelper {
     );
   }
 
-  Future<List<int>> _getIdBySubject(String subject, List<int> studentIds) async {
+  Future<List<int>> _getIdBySubject(
+    String subject,
+    List<int> studentIds,
+  ) async {
     Database db = await _openSubjectDb();
 
     final placeHolder = List.filled(studentIds.length, "?").join(",");
@@ -337,17 +342,17 @@ class DbHelper {
     return data;
   }
 
-    double _getMinOfScores(List<double> scores){
-      return (scores.reduce((a,b)=> a < b ? a : b));
-    }
+  double _getMinOfScores(List<double> scores) {
+    return (scores.reduce((a, b) => a < b ? a : b));
+  }
 
-    double _getMaxOfScores(List<double> scores){
-      return (scores.reduce((a,b)=> a > b ? a: b));
-    }
+  double _getMaxOfScores(List<double> scores) {
+    return (scores.reduce((a, b) => a > b ? a : b));
+  }
 
-  double _getAverageOfScores(List<double> scores){
-    final total = scores.fold<double>(0, (sum, score)=> sum + score);
-    final avg = double.tryParse((total/scores.length).toStringAsFixed(2));
+  double _getAverageOfScores(List<double> scores) {
+    final total = scores.fold<double>(0, (sum, score) => sum + score);
+    final avg = double.tryParse((total / scores.length).toStringAsFixed(2));
     return avg!;
   }
 
@@ -355,7 +360,7 @@ class DbHelper {
     List<StudentModel> studentList,
     String subject,
   ) async {
-   // Database studentDb = await _openStudentDb();
+    // Database studentDb = await _openStudentDb();
     Database subjectDb = await _openSubjectDb();
     List<int> studentIds = [];
     for (var student in studentList) {
@@ -367,11 +372,11 @@ class DbHelper {
       tableSubject,
       columns: [tblSubjectScore],
       where: "$tblSubjectStudentId in ($placeHolder) and $tblSubjectName = ?",
-      whereArgs: [...studentIds, subject]
+      whereArgs: [...studentIds, subject],
     );
 
-    final List<double> listOfScores = subjectsScoreList.map((e){
-      if(e[tblSubjectScore] != null){
+    final List<double> listOfScores = subjectsScoreList.map((e) {
+      if (e[tblSubjectScore] != null) {
         return e[tblSubjectScore] as double;
       }
       return 0.0;
@@ -383,7 +388,11 @@ class DbHelper {
 
     return subjectDb.update(
       tableSubject,
-      {tblSubjectHighestInClass: max, tblSubjectLowestInClass: min, tblSubjectAverageInClass: avg},
+      {
+        tblSubjectHighestInClass: max,
+        tblSubjectLowestInClass: min,
+        tblSubjectAverageInClass: avg,
+      },
       where: "$tblSubjectStudentId in ($placeHolder) and $tblSubjectName = ?",
       whereArgs: [...studentIds, subject],
     );
@@ -511,7 +520,7 @@ class DbHelper {
         tblStudentMasterRemarkDate: studentInfo.mDate,
         tblStudentTotalScore: studentInfo.totalScore,
         tblStudentAverageScore: studentInfo.averageScore,
-        tblStudentNoInAttendance: studentInfo.noInAttendance
+        tblStudentNoInAttendance: studentInfo.noInAttendance,
       },
       where: "$tblStudentId = ?",
       whereArgs: [studentInfo.id],
@@ -532,10 +541,24 @@ class DbHelper {
     return num;
   }
 
-
   Future<int> totalNumberOfStudent() async {
     final db = await _openStudentDb();
-    final total = sqflite.firstIntValue(await db.rawQuery("select count (*) from $tableStudent"));
+    final total = sqflite.firstIntValue(
+      await db.rawQuery("select count (*) from $tableStudent"),
+    );
     return total ?? 0;
+  }
+
+  Future<Map<String, List<StudentModel>>> getAllStudent(
+    List<String> cls,
+    String order
+  ) async {
+    Map<String, List<StudentModel>> studentList = {};
+    //final db = await _openStudentDb();
+    for (var cl in cls) {
+      studentList[cl] = await getAllStudentInAClass(cl, order);
+    }
+
+    return studentList;
   }
 }

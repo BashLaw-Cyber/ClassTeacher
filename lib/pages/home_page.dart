@@ -28,6 +28,12 @@ class _HomePageState extends State<HomePage> {
   int selectedValue = 0;
 
   @override
+  void initState() {
+    //Provider.of<StudentProvider>(context, listen: false).getAllStudent();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -79,11 +85,10 @@ class _HomePageState extends State<HomePage> {
             ),
             Expanded(
               child: Center(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: 1,
+                child: GridView(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                  ),
                   children: [
                     DashboardModel(
                       title: "Students",
@@ -112,7 +117,10 @@ class _HomePageState extends State<HomePage> {
                         final mapOfClassCardReport = await provider
                             .mapOfClassCardReport(classes);
                         EasyLoading.dismiss();
-                        context.goNamed(AssessmentsPage.route, extra: mapOfClassCardReport);
+                        context.goNamed(
+                          AssessmentsPage.route,
+                          extra: mapOfClassCardReport,
+                        );
                       },
                     ),
                     DashboardModel(
@@ -128,7 +136,10 @@ class _HomePageState extends State<HomePage> {
                         final mapOfClassCardReport = await provider
                             .mapOfClassCardReport(classes);
                         EasyLoading.dismiss();
-                        context.goNamed(ResultsPage.route, extra: mapOfClassCardReport);
+                        context.goNamed(
+                          ResultsPage.route,
+                          extra: mapOfClassCardReport,
+                        );
                       },
                     ),
                     DashboardModel(
@@ -138,9 +149,13 @@ class _HomePageState extends State<HomePage> {
                         context.goNamed(TermSessionPage.route);
                       },
                     ),
-                    DashboardModel(title: "Settings", icon: Icons.settings, onTap: () {
-                      context.goNamed(SettingPage.route);
-                    }),
+                    DashboardModel(
+                      title: "Settings",
+                      icon: Icons.settings,
+                      onTap: () {
+                        context.goNamed(SettingPage.route);
+                      },
+                    ),
                   ],
                 ),
               ),

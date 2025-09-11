@@ -33,13 +33,11 @@ class _StudentPageState extends State<StudentPage> {
   late List<String> departments;
   Gender gender = Gender.male;
   List<String> subjects = [];
-
   String? currentClass;
   String? selectedClass;
   String? selectedDepartment;
   bool decision = false;
   bool decision1 = false;
-
   TextEditingController nameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
 
@@ -51,7 +49,8 @@ class _StudentPageState extends State<StudentPage> {
     classes.sort();
     departments = getAllDepartments();
     departments.sort();
-    provider.totalNoStudent;
+    provider.getAllStudent();
+    provider.getTotalStudent();
     super.initState();
   }
 
@@ -60,26 +59,125 @@ class _StudentPageState extends State<StudentPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text("Student Page"),
+        title: Icon(Icons.school, color: Colors.blue),
         backgroundColor: backgroundColor,
         actions: [
+          SizedBox(
+            width: 130,
+            child: DropdownButton(
+              menuWidth: 100,
+              alignment: AlignmentDirectional.centerStart,
+              borderRadius: BorderRadius.circular(10),
+              dropdownColor: backgroundColor,
+              isExpanded: true,
+              hint: Text(
+                "Select a class",
+                style: TextStyle(color: Colors.blue),
+              ),
+              value: currentClass,
+              items: classes
+                  .map(
+                    (e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e, style: TextStyle(color: Colors.blue)),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  currentClass = value!;
+                });
+              },
+            ),
+          ),
           IconButton(
             onPressed: () {
-              context.goNamed(SearchPage.route);
+              List<String> srt = [
+                tblStudentName,
+                tblStudentId,
+                tblStudentAverageScore,
+              ];
+              String select = provider.orderBy;
+              showDialog(
+                context: context,
+                builder: (context) => StatefulBuilder(
+                  builder: (context, setState) => AlertDialog(
+                    backgroundColor: backgroundColor,
+                    title: Text("Sort by"),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Name:"),
+                            Switch(
+                              activeColor: Colors.blue,
+                              value: select == srt[0],
+                              onChanged: (value) {
+                                setState(() {
+                                  select = value ? srt[0] : "";
+                                });
+                                if (value) {
+                                  Provider.of<StudentProvider>(
+                                    context,
+                                    listen: false,
+                                  ).setOrderBy(select);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("ID"),
+                            Switch(
+                              activeColor: Colors.blue,
+                              value: select == srt[1],
+                              onChanged: (value) {
+                                setState(() {
+                                  select = value ? srt[1] : "";
+                                });
+                                if (value) {
+                                  Provider.of<StudentProvider>(
+                                    context,
+                                    listen: false,
+                                  ).setOrderBy(select);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Average Score"),
+                            Switch(
+                              activeColor: Colors.blue,
+                              value: select == srt[2],
+                              onChanged: (value) {
+                                setState(() {
+                                  select = value ? srt[2] : "";
+                                });
+                                if (value) {
+                                  Provider.of<StudentProvider>(
+                                    context,
+                                    listen: false,
+                                  ).setOrderBy(select);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+
             },
-            icon: Icon(Icons.search),
-          ),
-          DropdownButton(
-            hint: Text("Select a class"),
-            value: currentClass,
-            items: classes
-                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                currentClass = value!;
-              });
-            },
+            icon: Icon(Icons.sort, color: Colors.blue),
           ),
         ],
       ),
@@ -87,37 +185,12 @@ class _StudentPageState extends State<StudentPage> {
           ? Center(
               child: Text("kindly select a class from the top right corner"),
             )
-          : Consumer<StudentProvider>(
-              builder: (context, provider, child) {
-                return FutureBuilder<List<StudentModel>>(
-                  future: provider.getAllStudentInAClass(currentClass!),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      EasyLoading.show(status: "Please wait...");
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text("An error as occur"));
-                    } else if (snapshot.hasData) {
-                      EasyLoading.dismiss();
-                      final students = snapshot.data ?? [];
-                      return students.isEmpty
-                          ? Center(
-                              child: Text(
-                                "No student in $currentClass registered yet",
-                              ),
-                            )
-                          : listOfStudent(students, provider);
-                    }
-                    return SizedBox();
-                  },
-                );
-              },
-            ),
+          : listOfStudent(),
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () async {
-          int count = await provider.totalStudent();
-          if (count < 10) {
+          if (provider.totalNoStudent < 10) {
             addStudent(context);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -143,82 +216,87 @@ class _StudentPageState extends State<StudentPage> {
     );
   }
 
-  ListView listOfStudent(
-    List<StudentModel> students,
-    StudentProvider provider,
-  ) {
-    return ListView.builder(
-      itemCount: students.length,
-      itemBuilder: (context, index) {
-        final student = students[index];
-        return Dismissible(
-          confirmDismiss: (direction) {
-            return showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text("Caution"),
-                content: Text(
-                  "You are about to delete student: ${student.name} records",
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      provider.deleteStudent(student.id!);
-                      setState(() {});
-                      Navigator.pop(context);
+  Widget listOfStudent() {
+    return Consumer<StudentProvider>(
+      builder: (context, provider, child) {
+        final students = provider.studentList[currentClass]!;
+        return students.isEmpty
+            ? Center(child: Text("No student in $currentClass registered yet"))
+            : ListView.builder(
+                itemCount: students.length,
+                itemBuilder: (context, index) {
+                  final student = students[index];
+                  return Dismissible(
+                    confirmDismiss: (direction) {
+                      return showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Caution"),
+                          content: Text(
+                            "You are about to delete student: ${student.name} records",
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                provider.deleteStudent(student.id!);
+                                Navigator.pop(context);
+                              },
+                              child: Text("Yes"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("No"),
+                            ),
+                          ],
+                        ),
+                      );
                     },
-                    child: Text("Yes"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("No"),
-                  ),
-                ],
-              ),
-            );
-          },
-          key: Key(student.id.toString()),
-          background: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: Colors.red,
-            ),
-            child: Icon(Icons.delete, color: Colors.white),
-          ),
-          direction: DismissDirection.endToStart,
-          child: ListTile(
-            leading: CircleAvatar(child: Icon(Icons.person)),
-            title: Text(student.name),
-            subtitle: Row(
-              children: [
-                Flexible(child: Text("Age: ${student.age} ")),
-                Flexible(child: Text("Gender: ${student.gender} ")),
-                Flexible(child: Text("Dept: ${student.department}")),
-              ],
-            ),
-            onTap: () async {
-              EasyLoading.show(status: "Please wait...");
-              final subjects = await provider.getStudentSubjectById(
-                student.id!,
+                    key: Key(student.id.toString()),
+                    background: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: Colors.red,
+                      ),
+                      child: Icon(Icons.delete, color: Colors.white),
+                    ),
+                    direction: DismissDirection.endToStart,
+                    child: ListTile(
+                      leading: CircleAvatar(child: Icon(Icons.person)),
+                      title: Text(student.name),
+                      subtitle: Row(
+                        children: [
+                          Flexible(child: Text("Age: ${student.age} ")),
+                          Flexible(child: Text("Gender: ${student.gender} ")),
+                          Flexible(child: Text("Dept: ${student.department}")),
+                        ],
+                      ),
+                      onTap: () async {
+                        EasyLoading.show(status: "Please wait...");
+                        final subjects = await provider.getStudentSubjectById(
+                          student.id!,
+                        );
+                        EasyLoading.dismiss();
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StudentDetail(
+                              student: student,
+                              subjects: subjects,
+                            ),
+                          ),
+                        );
+                        if (result == "refresh") {
+                          setState(() {
+                            currentClass = currentClass;
+                          });
+                        }
+                      },
+                    ),
+                  );
+                },
               );
-              EasyLoading.dismiss();
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      StudentDetail(student: student, subjects: subjects),
-                ),
-              );
-              if (result == "refresh") {
-                setState(() {
-                  currentClass = currentClass;
-                });
-              }
-            },
-          ),
-        );
       },
     );
   }
@@ -394,11 +472,9 @@ class _StudentPageState extends State<StudentPage> {
       gender = Gender.male;
       selectedDepartment = null;
       decision = false;
-      //subjects.clear();
       setState(() {
         currentClass = currentClass;
       });
-      provider.totalNoStudent;
       Navigator.pop(context);
     }
   }
